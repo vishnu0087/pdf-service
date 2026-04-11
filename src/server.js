@@ -1,65 +1,16 @@
+const path = require("path");
 const express = require("express");
 const puppeteer = require("puppeteer");
 const { renderPdfHtml } = require("./pdf/renderHtml");
-const { samplePayload } = require("./samplePayload");
+const { normalizeQuotePayload } = require("./pdf/quoteNormalize");
+const samplePayload = require("./sample-data.json");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+const PUBLIC_DIR = path.join(__dirname, "..", "public");
 
 app.use(express.json({ limit: "10mb" }));
-app.use(express.static("public"));
-
-async function optimizePageFit(page) {
-  await page.evaluate(async () => {
-    const PAGE_HEIGHT_PX = 1046;
-    const TINY_OVERFLOW_PX = 42;
-    const root = document.getElementById("pdf-root");
-    if (!root) return;
-    const docEl = document.documentElement;
-
-    const getMetrics = () => {
-      const height = Math.ceil(root.getBoundingClientRect().height);
-      const pages = Math.ceil(height / PAGE_HEIGHT_PX);
-      const remainder = height - (pages - 1) * PAGE_HEIGHT_PX;
-      return { height, pages, remainder };
-    };
-
-    const applyAdaptiveFit = () => {
-      const initial = getMetrics();
-      if (initial.pages <= 1) return;
-
-      const overflow = PAGE_HEIGHT_PX - initial.remainder;
-      if (overflow <= 0 || overflow > TINY_OVERFLOW_PX) return;
-
-      const fontSizes = [15.8, 15.6, 15.4, 15.2, 15.0, 14.8, 14.6];
-      docEl.classList.add("pdf-compact");
-      for (const size of fontSizes) {
-        docEl.style.fontSize = size + "px";
-        const next = getMetrics();
-        if (next.pages < initial.pages) {
-          return;
-        }
-      }
-
-      // Revert if compact mode didn't solve tiny overflow.
-      docEl.classList.remove("pdf-compact");
-      docEl.style.fontSize = "";
-    };
-
-    const images = Array.from(document.images || []);
-    await Promise.all(
-      images.map((img) => {
-        if (img.complete) return Promise.resolve();
-        return new Promise((resolve) => {
-          img.addEventListener("load", resolve, { once: true });
-          img.addEventListener("error", resolve, { once: true });
-        });
-      })
-    );
-
-    applyAdaptiveFit();
-  });
-}
+app.use(express.static(PUBLIC_DIR));
 
 app.get("/health", (_req, res) => {
   res.json({
@@ -73,8 +24,16 @@ app.get("/api/pdf/sample-data", (_req, res) => {
   res.json(samplePayload);
 });
 
-app.get("/", (_req, res) => {
-  res.sendFile("index.html", { root: "public" });
+app.get("/api", (_req, res) => {
+  res.json({
+    service: "pdf-service",
+    endpoints: {
+      health: "GET /health",
+      sampleData: "GET /api/pdf/sample-data",
+      render: "POST /api/pdf/render",
+      download: "POST /api/pdf/download"
+    }
+  });
 });
 
 app.post("/api/pdf/render", async (req, res) => {
@@ -99,17 +58,16 @@ app.post("/api/pdf/render", async (req, res) => {
     const page = await browser.newPage();
     await page.setViewport({ width: 1240, height: 1754 });
     await page.setContent(html, { waitUntil: "networkidle0" });
-    await optimizePageFit(page);
 
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
       displayHeaderFooter: false,
       margin: {
-        top: "20px",
-        right: "20px",
-        bottom: "20px",
-        left: "20px"
+        top: "0",
+        right: "0",
+        bottom: "0",
+        left: "0"
       }
     });
 
@@ -152,21 +110,25 @@ app.post("/api/pdf/download", async (req, res) => {
     const page = await browser.newPage();
     await page.setViewport({ width: 1240, height: 1754 });
     await page.setContent(html, { waitUntil: "networkidle0" });
-    await optimizePageFit(page);
 
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
       margin: {
-        top: "20px",
-        right: "20px",
-        bottom: "20px",
-        left: "20px"
+        top: "0",
+        right: "0",
+        bottom: "0",
+        left: "0"
       }
     });
 
+    const outName = normalizeQuotePayload(payload)?.original_filename || "quote.pdf";
+
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", 'attachment; filename="report.pdf"');
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${outName.replace(/[^a-zA-Z0-9._-]/g, "_")}"`
+    );
     return res.send(pdfBuffer);
   } catch (error) {
     console.error("PDF download error:", error);

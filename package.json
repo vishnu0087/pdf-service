@@ -4,6 +4,7 @@
   "description": "Node.js PDF service using Puppeteer with React/Tailwind templates",
   "main": "src/server.js",
   "scripts": {
+    "build:css": "npx @tailwindcss/cli -i ./src/pdf/pdf-entry.css -o ./src/pdf/pdf-tailwind.css -m",
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test": "echo \"No tests configured\""
@@ -21,12 +22,12 @@
   "homepage": "https://github.com/vishnu0087/pdf-service#readme",
   "dependencies": {
     "express": "^5.2.1",
-    "pdf-lib": "^1.17.1",
     "puppeteer": "^24.40.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.2.2",
     "tailwindcss": "^4.2.2"
   }
 }

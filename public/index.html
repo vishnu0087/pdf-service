@@ -1,167 +1,143 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PDF Generator Form</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>PDF Service — Download Quote</title>
+    <style>
+      :root {
+        font-family: system-ui, Segoe UI, Roboto, sans-serif;
+        color: #1a1a1a;
+        line-height: 1.5;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f4f4f5;
+      }
+      .card {
+        background: #fff;
+        padding: 2rem 2.25rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        max-width: 420px;
+        width: 100%;
+        text-align: center;
+      }
+      h1 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+      }
+      p {
+        margin: 0 0 1.5rem;
+        font-size: 0.9rem;
+        color: #52525b;
+      }
+      button {
+        appearance: none;
+        font: inherit;
+        cursor: pointer;
+        border: none;
+        border-radius: 8px;
+        padding: 0.65rem 1.25rem;
+        background: #18181b;
+        color: #fff;
+        width: 100%;
+      }
+      button:hover:not(:disabled) {
+        background: #27272a;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .status {
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: #71717a;
+        min-height: 1.25em;
+      }
+      .status.error {
+        color: #b91c1c;
+      }
+    </style>
   </head>
-  <body class="min-h-screen bg-slate-100 p-6 text-slate-800">
-    <main class="mx-auto max-w-4xl rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-      <h1 class="text-2xl font-bold">Simple PDF Generator</h1>
-      <p class="mt-1 text-sm text-slate-600">Enter data and generate PDF.</p>
-
-      <form id="pdf-form" class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-        <input class="rounded border border-slate-300 px-3 py-2" name="companyName" placeholder="Company Name" value="Acme Solutions Pvt. Ltd." required />
-        <input class="rounded border border-slate-300 px-3 py-2" name="documentTitle" placeholder="Document Title" value="Sales Report" required />
-        <input class="rounded border border-slate-300 px-3 py-2" name="reference" placeholder="Reference" value="SR-2026-1001" required />
-        <input class="rounded border border-slate-300 px-3 py-2" name="currency" placeholder="Currency (INR/USD)" value="INR" required />
-        <input class="rounded border border-slate-300 px-3 py-2" name="clientName" placeholder="Client Name" value="Vishnu Kumar" required />
-        <input class="rounded border border-slate-300 px-3 py-2" name="clientEmail" placeholder="Client Email" value="vishnu@example.com" />
-        <input class="rounded border border-slate-300 px-3 py-2" name="clientPhone" placeholder="Client Phone" value="+91-9876543210" />
-        <input class="rounded border border-slate-300 px-3 py-2" name="clientAddress" placeholder="Client Address" value="Bengaluru, India" />
-
-        <section class="md:col-span-2 rounded-lg border border-slate-200 p-4">
-          <div class="mb-3 flex items-center justify-between">
-            <h2 class="text-sm font-semibold text-slate-700">Items</h2>
-            <button
-              id="add-item-btn"
-              class="rounded bg-slate-200 px-3 py-1 text-sm font-medium text-slate-800 hover:bg-slate-300"
-              type="button"
-            >
-              Add Item
-            </button>
-          </div>
-          <div class="mb-2 hidden md:grid md:grid-cols-10 md:gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-            <span class="md:col-span-5">Description</span>
-            <span class="md:col-span-2">Quantity</span>
-            <span class="md:col-span-2">Unit Price</span>
-            <span class="md:col-span-1">Action</span>
-          </div>
-          <div id="items-container" class="space-y-2"></div>
-          <template id="item-row-template">
-            <div class="item-row grid grid-cols-1 gap-2 md:grid-cols-10">
-              <input class="rounded border border-slate-300 px-3 py-2 md:col-span-5 item-description" placeholder="Description" required />
-              <input class="rounded border border-slate-300 px-3 py-2 md:col-span-2 item-quantity" placeholder="Qty" type="number" min="0" required />
-              <input class="rounded border border-slate-300 px-3 py-2 md:col-span-2 item-unit-price" placeholder="Unit Price" type="number" min="0" required />
-              <button class="rounded bg-rose-100 px-3 py-2 text-sm font-medium text-rose-700 hover:bg-rose-200 md:col-span-1 remove-item-btn" type="button">
-                Remove
-              </button>
-            </div>
-          </template>
-          <p class="mt-2 text-xs text-slate-500">Add items as needed. You can remove any row.</p>
-        </section>
-
-        <textarea class="md:col-span-2 min-h-20 rounded border border-slate-300 px-3 py-2" name="notes" placeholder="Notes">Payment due within 15 days.</textarea>
-        <input class="rounded border border-slate-300 px-3 py-2" name="footerLeft" placeholder="Footer Left" value="System generated document" />
-        <input class="rounded border border-slate-300 px-3 py-2" name="footerRight" placeholder="Footer Right" value="PDF Service" />
-
-        <button id="submit-btn" class="md:col-span-2 rounded bg-slate-900 px-4 py-2 font-semibold text-white hover:bg-slate-700" type="submit">
-          Generate PDF
-        </button>
-      </form>
-
-      <p id="status" class="mt-3 text-sm text-slate-600"></p>
-    </main>
-
+  <body>
+    <div class="card">
+      <h1>Quote PDF</h1>
+      <p>
+        Generates a PDF from the server’s sample quote data
+        (<code>src/sample-data.json</code>).
+      </p>
+      <button type="button" id="download">Download PDF</button>
+      <p class="status" id="status" aria-live="polite"></p>
+    </div>
     <script>
-      function createItemRow(initial = {}) {
-        const template = document.getElementById("item-row-template");
-        const clone = template.content.cloneNode(true);
-        const row = clone.querySelector(".item-row");
-        row.querySelector(".item-description").value = initial.description || "";
-        row.querySelector(".item-quantity").value = initial.quantity ?? "";
-        row.querySelector(".item-unit-price").value = initial.unitPrice ?? "";
-        row.querySelector(".remove-item-btn").addEventListener("click", () => {
-          if (document.querySelectorAll(".item-row").length === 1) return;
-          row.remove();
-        });
-        return row;
-      }
-
-      function collectItemsFromRows() {
-        const items = [];
-        const rows = document.querySelectorAll(".item-row");
-        rows.forEach((row) => {
-          const description = String(row.querySelector(".item-description").value || "").trim();
-          const quantity = Number(row.querySelector(".item-quantity").value || 0);
-          const unitPrice = Number(row.querySelector(".item-unit-price").value || 0);
-          if (!description) return;
-          items.push({ description, quantity, unitPrice });
-        });
-        return items;
-      }
-
-      async function handleSubmit(event) {
-        event.preventDefault();
-        const form = event.currentTarget;
+      (function () {
+        const btn = document.getElementById("download");
         const status = document.getElementById("status");
-        const submitBtn = document.getElementById("submit-btn");
-        const fd = new FormData(form);
-        const items = collectItemsFromRows();
 
-        if (!items.length) {
-          status.textContent = "Please enter at least one item.";
-          return;
-        }
+        btn.addEventListener("click", async function () {
+          status.textContent = "";
+          status.classList.remove("error");
+          btn.disabled = true;
+          status.textContent = "Loading data…";
 
-        const payload = {
-          documentTitle: fd.get("documentTitle"),
-          companyName: fd.get("companyName"),
-          reference: fd.get("reference"),
-          generatedAt: new Date().toISOString(),
-          clientName: fd.get("clientName"),
-          clientEmail: fd.get("clientEmail"),
-          clientPhone: fd.get("clientPhone"),
-          clientAddress: fd.get("clientAddress"),
-          currency: fd.get("currency"),
-          items,
-          notes: fd.get("notes"),
-          footerLeft: fd.get("footerLeft"),
-          footerRight: fd.get("footerRight")
-        };
+          try {
+            const dataRes = await fetch("/api/pdf/sample-data");
+            if (!dataRes.ok) {
+              throw new Error("Could not load sample data (" + dataRes.status + ")");
+            }
+            const payload = await dataRes.json();
 
-        submitBtn.disabled = true;
-        status.textContent = "Generating PDF...";
+            status.textContent = "Generating PDF…";
+            const pdfRes = await fetch("/api/pdf/download", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
 
-        try {
-          const response = await fetch("/api/pdf/download", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          if (!response.ok) throw new Error("Failed to generate PDF");
+            if (!pdfRes.ok) {
+              let msg = "PDF generation failed (" + pdfRes.status + ")";
+              try {
+                const err = await pdfRes.json();
+                if (err.message) msg = err.message;
+              } catch (_) {}
+              throw new Error(msg);
+            }
 
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "report.pdf";
-          a.click();
-          URL.revokeObjectURL(url);
-          status.textContent = "PDF generated successfully.";
-        } catch (error) {
-          status.textContent = error.message || "Error while generating PDF.";
-        } finally {
-          submitBtn.disabled = false;
-        }
-      }
+            const blob = await pdfRes.blob();
+            const raw =
+              payload.original_filename ||
+              payload.originalFileName ||
+              "quote.pdf";
+            const filename = String(raw).toLowerCase().endsWith(".pdf")
+              ? raw
+              : raw + ".pdf";
 
-      const itemsContainer = document.getElementById("items-container");
-      const addItemBtn = document.getElementById("add-item-btn");
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            a.rel = "noopener";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
 
-      addItemBtn.addEventListener("click", () => {
-        itemsContainer.appendChild(createItemRow());
-      });
-
-      itemsContainer.appendChild(
-        createItemRow({ description: "Web dashboard setup", quantity: 1, unitPrice: 25000 })
-      );
-      itemsContainer.appendChild(
-        createItemRow({ description: "API integration service", quantity: 2, unitPrice: 12000 })
-      );
-
-      document.getElementById("pdf-form").addEventListener("submit", handleSubmit);
+            status.textContent = "Download started.";
+          } catch (e) {
+            status.textContent = e.message || "Something went wrong.";
+            status.classList.add("error");
+          } finally {
+            btn.disabled = false;
+          }
+        });
+      })();
     </script>
   </body>
 </html>

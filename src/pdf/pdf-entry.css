@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@source "./quoteTemplate.jsx";
+
+/* PDF-specific tokens aligned with Quote template */
+@theme {
+  --font-quote: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --color-quote-header: #ffb74d;
+  --color-quote-muted: #444444;
+}

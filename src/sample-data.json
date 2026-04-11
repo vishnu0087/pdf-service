@@ -1,0 +1,91 @@
+{
+  "customer_name": "Mr. a",
+  "customer_address": "B/S, HDFC Bank, Deep chamber crossing, 203/204, Radhakisan Apartment, nr. Kubereshwar Mahadev Marg, Manjalpur, Vadodara, Gujarat 390011",
+  "customer_phone": "9898989898",
+  "customer_email": "a",
+  "quote_title": "Quote",
+  "quote_reference": "Quote 26-118v1",
+  "quote_date": "10 April 2026",
+  "prepared_by": "Vibha Madan",
+  "contact": "7043081966",
+  "not_approved": true,
+  "letter": "Dear customer,\n\nThank you for considering Devyami for your water solution needs. We are a one-stop water solution firm that offers customised and innovative solutions for your unique requirements.\n\nWith over two decades of experience, we are experts in providing a wide range of water related devices and systems, which covers pumping solutions, water heating solutions, swimming pool solutions, water treatment & filtration systems, and automation systems.\n\nOur team of experts is dedicated to delivering the highest level of service, support, and maintenance, ensuring that your water system operates efficiently and reliably. We offer competitive pricing and quick turnaround times, making us the preferred choice for customers across the region.\n\nAt Devyami, we believe that water is one of the most precious resources on the planet and our products and services are designed to help you conserve water while enjoying its many benefits. We provide comprehensive solutions, from initial consultation and system design to installation and after-sales service.\n\nIf you have any questions or concerns, please contact us. We look forward to working with you to achieve your goals.",
+  "line_items": [
+    { "type": "label", "text": "Label 1" },
+    {
+      "type": "product",
+      "serial": "1.",
+      "image": "product_placeholder",
+      "image_width": 40,
+      "image_height": 40,
+      "product_lines": [
+        "AL-206 Submersible Pump",
+        "Make : Autopump HP : 0.4 20+20",
+        "(12 Months Warranty)"
+      ],
+      "hsn_gst": "123456\n18% GST",
+      "price": "₹12,500/-",
+      "qty": "1 Nos.",
+      "discount": "10%",
+      "total": "₹11,250/-",
+      "total_cell": "highlight"
+    },
+    {
+      "type": "product",
+      "serial": "2.",
+      "image": "product_placeholder",
+      "product_lines": [
+        "Underground to Overhead Tank Water Lifting",
+        "Submersible Pump with Automation",
+        "System includes: ALVR 10-3 External Pump (1 nos.)",
+        "Make : Autopump",
+        "Phase : Three",
+        "HP : 1.5",
+        "(12 Months Warranty)"
+      ],
+      "hsn_gst": "234567\n18% GST",
+      "price": "₹54,500/-",
+      "qty": "1",
+      "discount": "-",
+      "total": "₹54,500/-",
+      "total_cell": "muted"
+    }
+  ],
+  "totals": [
+    { "label": "Raw Total", "value": "₹1,54,350/-" },
+    { "label": "Net Total", "value": "₹1,54,350/-", "bold": true },
+    { "label": "GST", "value": "₹27,783/-" },
+    { "label": "Grand Total", "value": "₹1,82,133/-", "bold": true }
+  ],
+  "terms_sections": [
+    {
+      "title": "Delivery Terms",
+      "items": ["term 1 for example"]
+    },
+    {
+      "title": "Payment Terms",
+      "items": [
+        "For Order value till INR 7 lacs - 100% Advance on order confirmation"
+      ]
+    }
+  ],
+  "payment_details": {
+    "title": "Payment Details",
+    "rows": [
+      [{ "text": "Account Name" }, { "text": "APCON INC", "bold": true }],
+      [{ "text": "Account Number" }, { "text": "250320110000192", "bold": true }],
+      [{ "text": "Bank Name" }, { "text": "Bank of India", "bold": true }],
+      [{ "text": "IFSC Code" }, { "text": "BKID0002503", "bold": true }],
+      [{ "text": "Branch Name" }, { "text": "R.V Desai Road (Vadodara)", "bold": true }],
+      [{ "text": "GST IN" }, { "text": "24AAFHD3866E1ZI", "bold": true }],
+      [{ "text": "QR Code" }, { "image": "qr_placeholder", "width": 150 }]
+    ]
+  },
+  "stamp": {
+    "show": true,
+    "image": "not_approved_stamp",
+    "width": 100,
+    "height": 100
+  },
+  "original_filename": "Quote_26_118v1_a.pdf"
+}
